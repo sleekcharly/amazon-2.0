@@ -19,16 +19,13 @@ export default class MyDocument extends Document {
 
 MyDocument.getInitialProps = async ctx => {
   const sheets = new ServerStyleSheets();
-  // get original rendered page
-  const originalRenderpage = ctx.renderPage;
-  ctx.renderpage = () => {
-    return originalRenderpage({
+  const originalRenderPage = ctx.renderPage;
+  ctx.renderPage = () => {
+    return originalRenderPage({
       enhanceApp: App => props => sheets.collect(<App {...props} />)
     });
   };
-
   const initialProps = await Document.getInitialProps(ctx);
-
   return {
     ...initialProps,
     styles: [
