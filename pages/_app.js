@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import "../styles/globals.css";
+import { StoreProvider } from "../utils/store";
 
 function MyApp({ Component, pageProps }) {
   // remove css for server side rendering of material-ui elements
@@ -10,7 +11,11 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  return <Component {...pageProps} />;
+  return (
+    <StoreProvider>
+      <Component {...pageProps} />
+    </StoreProvider>
+  );
 }
 
 export default MyApp;
