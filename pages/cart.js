@@ -20,8 +20,9 @@ import Layout from "../components/Layout";
 import { Store } from "../utils/store";
 import NextLink from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 
-export default function CartScreen() {
+function CartScreen() {
   const { state } = useContext(Store);
   const {
     cart: { cartItems }
@@ -125,3 +126,6 @@ export default function CartScreen() {
     </Layout>
   );
 }
+
+// to make the cartscreen componenet a dynamic component and prevent MUI server side rendering error
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
