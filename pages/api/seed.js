@@ -11,7 +11,7 @@ handler.get(async (req, res) => {
   // delete all users in User model
   await User.deleteMany();
   // insert users from data
-  await User.insertMany(data.products);
+  await User.insertMany(data.users);
   //   delete all products i Product model
   await Product.deleteMany();
   //   insert products from data

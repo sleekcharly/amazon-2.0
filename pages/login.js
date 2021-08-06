@@ -6,16 +6,34 @@ import {
   TextField,
   Typography
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import Layout from "../components/Layout";
 import useStyles from "../utils/styles";
 import NextLink from "next/link";
+import axios from "axios";
+import dynamic from "next/dynamic";
 
-export default function Login() {
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const classes = useStyles();
+
+  const submitHandler = async e => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post("/api/users/login", {
+        email,
+        password
+      });
+      alert("Success login");
+    } catch (err) {
+      alert(err.response.data ? err.response.data.message : err.message);
+    }
+  };
   return (
     <Layout title="Login">
-      <form className={classes.form}>
+      <form className={classes.form} onSubmit={submitHandler}>
         <Typography component="h1" variant="h1">
           Login
         </Typography>
@@ -26,6 +44,8 @@ export default function Login() {
               fullWidth
               id="email"
               label="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               inputProps={{ type: "email" }}
             ></TextField>
           </ListItem>
@@ -37,6 +57,7 @@ export default function Login() {
               id="password"
               label="Password"
               inputProps={{ type: "password" }}
+              onChange={e => setPassword(e.target.value)}
             ></TextField>
           </ListItem>
 
@@ -57,3 +78,6 @@ export default function Login() {
     </Layout>
   );
 }
+
+// to make the Login componenet a dynamic component and prevent MUI server side rendering error
+export default dynamic(() => Promise.resolve(Login), { ssr: false });
