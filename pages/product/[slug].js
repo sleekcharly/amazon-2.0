@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 
 export default function ProductScreen({ product }) {
   const router = useRouter();
-  const { dispatch } = useContext(Store);
+  const { state, dispatch } = useContext(Store);
   const classes = useStyles();
   // get the router object from next js
   //   const router = useRouter();
@@ -37,15 +37,16 @@ export default function ProductScreen({ product }) {
   }
 
   const addToCartHandler = async () => {
+    const existItem = state.cart.cartItems.find(x => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${product._id}`);
 
-    // check if product is out of stock
-    if (data.countInStock <= 0) {
+    if (data.countInStock <= quantity) {
       window.alert("Sorry, Product is out of stock");
       return;
     }
 
-    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity: 1 } });
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity } });
     router.push("/cart");
   };
 
