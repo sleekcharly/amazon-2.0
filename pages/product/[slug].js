@@ -18,8 +18,10 @@ import Product from "../../models/Product";
 import db from "../../utils/db";
 import axios from "axios";
 import { Store } from "../../utils/store";
+import { useRouter } from "next/router";
 
 export default function ProductScreen({ product }) {
+  const router = useRouter();
   const { dispatch } = useContext(Store);
   const classes = useStyles();
   // get the router object from next js
@@ -44,6 +46,7 @@ export default function ProductScreen({ product }) {
     }
 
     dispatch({ type: "CART_ADD_ITEM", payload: { ...product, quantity: 1 } });
+    router.push("/cart");
   };
 
   return (
