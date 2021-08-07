@@ -1,3 +1,4 @@
+import React, { useContext, useEffect } from "react";
 import {
   Button,
   Link,
@@ -6,7 +7,6 @@ import {
   TextField,
   Typography
 } from "@material-ui/core";
-import React, { useContext, useEffect } from "react";
 import Layout from "../components/Layout";
 import useStyles from "../utils/styles";
 import NextLink from "next/link";
@@ -18,7 +18,7 @@ import Cookies from "js-cookie";
 import { Controller, useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
 
-function Login() {
+function Register() {
   const {
     handleSubmit,
     control,
@@ -27,9 +27,8 @@ function Login() {
 
   // to handle notification
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
   const router = useRouter();
-  const { redirect } = router.query; // login?redirect=/shipping
+  const { redirect } = router.query;
   const { state, dispatch } = useContext(Store);
   const { userInfo } = state;
   useEffect(() => {
@@ -40,10 +39,17 @@ function Login() {
 
   const classes = useStyles();
 
-  const submitHandler = async ({ email, password }) => {
+  const submitHandler = async ({ name, email, password, confirmPassword }) => {
     closeSnackbar();
+
+    if (password !== confirmPassword) {
+      enqueueSnackbar("passwords do not match", { variant: "error" });
+
+      return;
+    }
     try {
-      const { data } = await axios.post("/api/users/login", {
+      const { data } = await axios.post("/api/users/register", {
+        name,
         email,
         password
       });
@@ -59,12 +65,42 @@ function Login() {
     }
   };
   return (
-    <Layout title="Login">
+    <Layout title="Register">
       <form className={classes.form} onSubmit={handleSubmit(submitHandler)}>
         <Typography component="h1" variant="h1">
-          Login
+          Register
         </Typography>
         <List>
+          <ListItem>
+            <Controller
+              name="name"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 2
+              }}
+              render={({ field }) => (
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  id="name"
+                  label="Name"
+                  error={Boolean(errors.name)}
+                  inputProps={{ type: "name" }}
+                  helperText={
+                    errors.name
+                      ? errors.email.type === "minLength"
+                        ? "Name length is more than one"
+                        : "Name is required"
+                      : ""
+                  }
+                  {...field}
+                ></TextField>
+              )}
+            ></Controller>
+          </ListItem>
+
           <ListItem>
             <Controller
               name="email"
@@ -126,15 +162,45 @@ function Login() {
           </ListItem>
 
           <ListItem>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: true,
+                minLength: 6
+              }}
+              render={({ field }) => (
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  id="confirmPassword"
+                  label="Confirm Password"
+                  error={Boolean(errors.confirmPassword)}
+                  inputProps={{ type: "password" }}
+                  helperText={
+                    errors.confirmPassword
+                      ? errors.confirmPassword.type === "minLength"
+                        ? "Pattern length is more than 5"
+                        : "Password is required"
+                      : ""
+                  }
+                  {...field}
+                ></TextField>
+              )}
+            ></Controller>
+          </ListItem>
+
+          <ListItem>
             <Button type="submit" fullWidth variant="contained" color="primary">
-              Login
+              Register
             </Button>
           </ListItem>
 
           <ListItem>
-            Don&apos;t have an account? &nbsp;
-            <NextLink href={`/register?redirect=${redirect || "/"}`} passHref>
-              <Link>Register</Link>
+            Already have an account? &nbsp;
+            <NextLink href={`/login?redirect=${redirect || "/"}`} passHref>
+              <Link>Login</Link>
             </NextLink>
           </ListItem>
         </List>
@@ -144,4 +210,4 @@ function Login() {
 }
 
 // to make the Login componenet a dynamic component and prevent MUI server side rendering error
-export default dynamic(() => Promise.resolve(Login), { ssr: false });
+export default dynamic(() => Promise.resolve(Register), { ssr: false });
