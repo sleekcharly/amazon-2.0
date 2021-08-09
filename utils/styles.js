@@ -8,45 +8,40 @@ const useStyles = makeStyles({
       marginLeft: 10
     }
   },
-
-  grow: {
-    flexGrow: 1
-  },
-
-  main: {
-    minHeight: "80vh"
-  },
-
-  footer: {
-    marginTop: 10,
-    textAlign: "center"
-  },
-
   brand: {
     fontWeight: "bold",
     fontSize: "1.5rem"
   },
-
-  section: {
-    marginTop: 10
+  grow: {
+    flexGrow: 1
   },
-
+  main: {
+    minHeight: "80vh"
+  },
+  footer: {
+    marginTop: 10,
+    textAlign: "center"
+  },
+  section: {
+    marginTop: 10,
+    marginBottom: 10
+  },
   form: {
     maxWidth: 800,
     margin: "0 auto"
   },
-
   navbarButton: {
     color: "#ffffff",
     textTransform: "initial"
   },
-
-  transparentBackground: {
+  transparentBackgroud: {
     backgroundColor: "transparent"
   },
   error: {
     color: "#f04040"
+  },
+  fullWidth: {
+    width: "100%"
   }
 });
-
 export default useStyles;

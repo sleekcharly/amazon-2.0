@@ -1,3 +1,4 @@
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { SnackbarProvider } from "notistack";
 import { useEffect } from "react";
 import "../styles/globals.css";
@@ -11,11 +12,15 @@ function MyApp({ Component, pageProps }) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
-
   return (
     <SnackbarProvider anchorOrigin={{ vertical: "top", horizontal: "center" }}>
       <StoreProvider>
-        <Component {...pageProps} />
+        <PayPalScriptProvider
+          options={{ "client-id": process.env.PAYPAL_CLIENT_ID }}
+          deferLoading={true}
+        >
+          <Component {...pageProps} />
+        </PayPalScriptProvider>
       </StoreProvider>
     </SnackbarProvider>
   );
